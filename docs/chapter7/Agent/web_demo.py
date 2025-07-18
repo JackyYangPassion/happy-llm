@@ -2,6 +2,7 @@ import streamlit as st
 from src.core import Agent
 from src.tools import add, count_letter_in_string, compare, get_current_datetime, search_wikipedia, get_current_temperature
 from openai import OpenAI
+import os
 
 # --- 页面配置 ---
 st.set_page_config(
@@ -12,10 +13,13 @@ st.set_page_config(
 )
 
 # --- OpenAI客户端初始化 ---
-client = OpenAI(
-    api_key="sk-quovvfgjdmmrvwiljusggiwvxfiekzicwjgtdvpfqhpmbpqu",
-    base_url="https://api.siliconflow.cn/v1",  
-)
+# QWEN_API_KEY = os.getenv("QWEN_API_KEY")
+# client = OpenAI(
+#    api_key=QWEN_API_KEY,
+#    base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",
+# )
+QWEN_API_KEY = os.getenv("OPENAI_API_KEY")
+client = OpenAI(api_key=QWEN_API_KEY,)
 
 # --- Agent初始化 ---
 @st.cache_resource
@@ -23,7 +27,7 @@ def load_agent():
     """创建并缓存Agent实例。"""
     return Agent(
         client=client,
-        model="Qwen/Qwen2.5-32B-Instruct",  # 使用的模型
+        model="gpt-4o",  # 使用的模型
         tools=[get_current_datetime, search_wikipedia, get_current_temperature],  # Agent可以使用的工具
     )
 

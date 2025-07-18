@@ -51,7 +51,15 @@ class Agent:
             stream=False,
         )
         if response.choices[0].message.tool_calls:
-            self.messages.append({"role": "assistant", "content": response.choices[0].message.content})
+            # 处理工具调用时，content可能为None，需要使用空字符串替代
+            content = response.choices[0].message.content or ""
+            assistant_message = {
+                "role": "assistant", 
+                "content": content,
+                "tool_calls": response.choices[0].message.tool_calls
+            }
+            self.messages.append(assistant_message)
+            
             # 处理工具调用
             tool_list = []
             for tool_call in response.choices[0].message.tool_calls:
@@ -59,7 +67,7 @@ class Agent:
                 self.messages.append(self.handle_tool_call(tool_call))
                 tool_list.append([tool_call.function.name, tool_call.function.arguments])
             if self.verbose:
-                print("调用工具：", response.choices[0].message.content, tool_list)
+                print("调用工具：", content, tool_list)
             # 再次获取模型的完成响应，这次包含工具调用的结果
             response = self.client.chat.completions.create(
                 model=self.model,

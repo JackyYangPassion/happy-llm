@@ -5,9 +5,10 @@ from openai import OpenAI
 
 
 if __name__ == "__main__":
+    QWEN_API_KEY = os.getenv("QWEN_API_KEY")
     client = OpenAI(
-        api_key="your siliconflow api key",
-        base_url="https://api.siliconflow.cn/v1",
+        api_key=QWEN_API_KEY,
+        base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",
     )
 
     agent = Agent(
